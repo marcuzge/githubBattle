@@ -1,14 +1,18 @@
 var axios = require('axios');
 
+var id = "YOUR_CLIENT_ID";
+var sec = "YOUR_SECRET_ID";
+var params = "?client_id=" + id + "&client_secret=" + sec;
+
 function getProfile(username) {
-  return axios.get('https://api.github.com/users/' + username)
+  return axios.get('https://api.github.com/users/' + username + params)
     .then(function(user) {
       return user.data;
     })
 }
 
 function getRepos(username) {
-  return axios.get('https://api.github.com/users/' + username + '/repos' + '&per_page=100');
+  return axios.get('https://api.github.com/users/' + username + '/repos' + params + '&per_page=100');
 }
 
 function getStartCount(repos) {
@@ -18,9 +22,10 @@ function getStartCount(repos) {
 }
 
 function calculateScore(profile, repos) {
+  var reposNumber = profile.public_repos;
   var followers = profile.followers;
   var totalStars = getStartCount(repos);
-  return (3 * followers) + totalStars;
+  return (3 * reposNumber) + (2 * followers) + totalStars;
 }
 
 function handleError(error) {
